@@ -4,8 +4,7 @@ Recent advances in single-cell technologies have enabled high-throughput molecul
 # Spatial transcriptomics
 In recent years, spatial genomics methods have been rapidly developing, addressing the limitation of single-cell sequencing that lacks spatial information. The detection results more accurately reflect the original tissue morphology, which is of great significance to life science research. Additionally, through spatial genomics detection, we can analyze information such as gene expression, protein expression, and metabolites in tissues. This can be combined with H&E staining and traditional pathology results to bring deeper insights into disease research.
 
-ref: 
-
+ref:
 https://www.science.org/doi/10.1126/science.abf1970
 https://www.nature.com/articles/s41573-023-00688-4
 https://www.nature.com/articles/s41576-023-00586-w
