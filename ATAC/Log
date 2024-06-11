@@ -1,1 +1,4 @@
-
+#Pipeline
+Fastqc: quality control
+BWA: mapping
+MACS2: callpeak
