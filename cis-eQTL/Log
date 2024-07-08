@@ -1,4 +1,4 @@
-
+###eQTL.R
 args <- commandArgs(trailingOnly = TRUE)
 chr = args[1]
 
