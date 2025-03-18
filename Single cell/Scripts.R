@@ -1,4 +1,4 @@
-# Save
+# Save 
 > saveRDS(pBAT.data, file='id.rds')
 > save.image("myfile_image_D3_pBAT") 
 > savehistory("myfile_history_D3_pBAT") 
@@ -19,7 +19,7 @@
 > pBAT.data[["percent.mt"|] <- PercentageFeatureSet(BAT.data, pattern = "MT-")
 > head(pBAT.data@meta.data, 5)
 
-#plot
+# plot
 > p=VlnPlot(pBAT.data, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) 
 > pdf("data.pdf") 
 >p
