@@ -88,6 +88,67 @@ ggsave("sample_id_UMAP.pdf", plot = umap_sample_id, width = 8, height = 6)
 
 ####### Cell Type Annotation
 # To annotate cell types, we use known marker genes:
+library(dplyr)
 
+top_markers_sample_id <- FindAllMarkers(chcx_seurat, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+                                               
+# Identify top marker genes for each cluster
+top_markers_sample_id %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC)
 
+# Select known markers for cell type annotation
+celltype_map <- c(
+  "0"  = "Cardiomyocytes",      # MYH6, TNNT2
+  "1"  = "Fibroblasts",         # ACTA2, COL1A1
+  "2"  = "Endothelial cells",   # PECAM1, VWF
+  "3"  = "Macrophages",         # CD68, CSF1R
+  "4"  = "T Cells",             # CD3E, CD4, CD8A
+  "5"  = "B Cells",             # MS4A1 (CD20), CD19
+  "6"  = "Neutrophils",         # FCGR3B, S100A9
+  "7"  = "Monocytes",           # CD14, LYZ
+  "8"  = "Dendritic Cells",     # CD1C, CLEC9A
+  "9"  = "NK Cells",            # GNLY, NKG7
+  "10" = "Smooth Muscle Cells", # ACTA2, TAGLN
+  "11" = "Pericytes",           # RGS5, MCAM
+  "12" = "Epithelial Cells",    # EPCAM, KRT19
+  "13" = "Plasma Cells",        # MZB1, JCHAIN
+  "14" = "Proliferating Cells", # MKI67, TOP2A
+  "15" = "Chondrocytes",        # COL2A1, SOX9
+  "16" = "Schwann Cells",       # MPZ, S100B
+  "17" = "Mast Cells",          # KIT, TPSAB1
+  "18" = "Endocardial Cells",   # NPPB, HEY2
+  "19" = "Erythrocytes",        # HBA1, HBB
+  "20" = "Myofibroblasts",      # ACTA2, TAGLN
+  "21" = "Mesothelial Cells",   # UPK3B, WT1
+  "22" = "Adipocytes",          # PPARG, ADIPOQ
+  "23" = "Neural Cells"         # NEUROD1, DCX
+)
 
+# Ensure 'cluster' is used as Idents
+Idents(sample_id_seurat) <- "seurat_clusters"
+
+# Create a cell_type vector with cell names
+cell_type_vec_sample_id <- setNames(celltype_map[as.character(Idents(sample_id_seurat))], 
+                               names(Idents(sample_id_seurat)))
+
+# Assign cell types to `sample_id_seurat`
+sample_id_seurat$cell_type <- cell_type_vec_sample_id[rownames(sample_id_seurat@meta.data)]
+
+# Check cell type distribution
+table(sample_id_seurat$cell_type, useNA = "always")
+
+library(patchwork)
+
+# UMAP colored by cell type
+p_sample_id_umap <- DimPlot(sample_id_seurat, group.by = "cell_type", label = TRUE, pt.size = 0.5) + 
+  ggtitle("sample_id - Cell Type UMAP")
+
+# `gene_name` expression
+p_sample_id_gdf11 <- FeaturePlot(sample_id_seurat, features = "gene_name", 
+                            min.cutoff = "q10", max.cutoff = "q90", 
+                            cols = c("lightgrey", "red")) + 
+  ggtitle("sample_id - gene_name Expression")
+
+# Save plots as PDF
+pdf("sample_id_FeaturePlot.pdf", width = 10, height = 6)
+print(p_sample_id_umap | p_sample_id_gene_name)
+dev.off()
